@@ -20,6 +20,7 @@ import org.eclipse.che.plugin.docker.client.DockerConnector;
 import org.eclipse.che.plugin.docker.client.MessageProcessor;
 import org.eclipse.che.plugin.docker.client.json.Event;
 import org.eclipse.che.plugin.docker.client.json.Filters;
+import org.eclipse.che.plugin.docker.client.params.GetEventsParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,9 +105,9 @@ public class DockerInstanceStopDetector {
             //noinspection InfiniteLoopStatement
             while (true) {
                 try {
-                    dockerConnector.getEvents(lastProcessedEventDate,
-                                              0,
-                                              new Filters().withFilter("event", "die", "oom"),
+                    dockerConnector.getEvents(GetEventsParams.create()
+                                                             .withSinceSecond(lastProcessedEventDate)
+                                                             .withFilters(new Filters().withFilter("event", "die", "oom")),
                                               new EventsProcessor());
                 } catch (IOException e) {
                     // usually connection timeout
